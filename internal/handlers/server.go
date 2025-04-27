@@ -29,7 +29,6 @@ func NewServer(cfg config.Server, user *UserHandler, auth *AuthHandler) *Server 
 		server: server,
 	}
 	srv.Register()
-	srv.Login()
 	return srv
 }
 
@@ -43,8 +42,5 @@ func (srv *Server) Shutdown(ctx context.Context) error {
 
 func (srv *Server) Register() {
 	srv.router.POST("/api/v1/user/register", srv.user.Register)
-}
-
-func (srv *Server) Login() {
-	srv.router.POST("/api/v1/user/login", srv.auth.Login)
+	srv.router.POST("/api/v1/auth/login", srv.auth.Login)
 }

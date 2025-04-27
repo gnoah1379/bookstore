@@ -16,7 +16,7 @@ func NewAuthHandler(authSvc service.AuthService) *AuthHandler {
 }
 
 func (h *AuthHandler) Login(c *gin.Context) {
-	var request service.UserLogin
+	var request service.UserLoginRequest
 	err := c.ShouldBindJSON(&request)
 	if err != nil {
 		ResponseError(c, http.StatusBadRequest, err.Error())

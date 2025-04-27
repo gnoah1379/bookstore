@@ -4,40 +4,33 @@ import (
 	"bookstore/internal/model"
 	"bookstore/internal/repository"
 	"context"
-	"fmt"
+	"errors"
 )
 
-type UserLogin struct {
+type UserLoginRequest struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
 type AuthService interface {
-	Login(ctx context.Context, user UserLogin) (model.User, error)
+	Login(ctx context.Context, user UserLoginRequest) (model.UserInfo, error)
 }
 
 type authService struct {
-	authRepo repository.AuthRepo
+	userRepo repository.UserRepo
 }
 
-func NewAuthService(authRepo repository.AuthRepo) AuthService {
-	return &authService{authRepo: authRepo}
+func NewAuthService(userRepo repository.UserRepo) AuthService {
+	return &authService{userRepo: userRepo}
 }
 
-func (s *authService) Login(ctx context.Context, user UserLogin) (model.User, error) {
-	Password, err := HashPassword(user.Password)
+func (s *authService) Login(ctx context.Context, req UserLoginRequest) (model.UserInfo, error) {
+	user, err := s.userRepo.GetUserByUsername(ctx, req.Username)
 	if err != nil {
-		return model.User{}, err
+		return model.UserInfo{}, err
 	}
-	var userLogin = model.User{
-		Username: user.Username,
-		Password: string(Password),
+	if !CheckPasswordHash(req.Password, user.Password) {
+		return model.UserInfo{}, errors.New("invalid password")
 	}
-
-	var dbUser model.User
-	dbUser, err = s.authRepo.Login(ctx, userLogin)
-	if err != nil {
-		return model.User{}, fmt.Errorf("error login %w", err)
-	}
-	return dbUser, nil
+	return result, nil
 }
