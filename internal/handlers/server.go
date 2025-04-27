@@ -4,17 +4,19 @@ import (
 	"bookstore/internal/config"
 	"context"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
 	router *gin.Engine
 	server *http.Server
 	user   *UserHandler
+	auth   *AuthHandler
 }
 
-func NewServer(cfg config.Server, user *UserHandler) *Server {
+func NewServer(cfg config.Server, user *UserHandler, auth *AuthHandler) *Server {
 	router := gin.Default()
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", cfg.Port),
@@ -22,6 +24,7 @@ func NewServer(cfg config.Server, user *UserHandler) *Server {
 	}
 	srv := &Server{
 		user:   user,
+		auth:   auth,
 		router: router,
 		server: server,
 	}
@@ -39,4 +42,5 @@ func (srv *Server) Shutdown(ctx context.Context) error {
 
 func (srv *Server) Register() {
 	srv.router.POST("/api/v1/user/register", srv.user.Register)
+	srv.router.POST("/api/v1/auth/login", srv.auth.Login)
 }

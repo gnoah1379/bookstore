@@ -20,7 +20,7 @@ type UserRegistration struct {
 }
 
 type UserService interface {
-	Register(ctx context.Context, user UserRegistration) (model.UserInfo, error)
+	Register(ctx context.Context, user UserRegistration) (model.User, error)
 }
 
 type userService struct {
@@ -31,10 +31,10 @@ func NewUserService(userRepo repository.UserRepo) UserService {
 	return &userService{userRepo: userRepo}
 }
 
-func (u *userService) Register(ctx context.Context, userReg UserRegistration) (model.UserInfo, error) {
+func (u *userService) Register(ctx context.Context, userReg UserRegistration) (model.User, error) {
 	password, err := HashPassword(userReg.Password)
 	if err != nil {
-		return model.UserInfo{}, fmt.Errorf("error hashing password %w", err)
+		return model.User{}, fmt.Errorf("error hashing password %w", err)
 	}
 	var user = model.User{
 		Username:  userReg.Username,
@@ -52,9 +52,7 @@ func (u *userService) Register(ctx context.Context, userReg UserRegistration) (m
 
 	err = u.userRepo.CreateUser(ctx, &user)
 	if err != nil {
-		return model.UserInfo{}, fmt.Errorf("error creating user %w", err)
+		return model.User{}, fmt.Errorf("error creating user %w", err)
 	}
-	var result model.UserInfo
-	result.FromUser(user)
-	return result, err
+	return user, err
 }
