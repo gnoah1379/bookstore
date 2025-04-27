@@ -8,11 +8,12 @@ import (
 	"bookstore/internal/service"
 	"context"
 	"fmt"
-	"github.com/spf13/cobra"
 	"log/slog"
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/spf13/cobra"
 )
 
 var configPath string
@@ -33,7 +34,10 @@ var serverCmd = &cobra.Command{
 		userRepo := repository.NewUserRepo(db)
 		userSvc := service.NewUserService(userRepo)
 		userHandler := handlers.NewUserHandler(userSvc)
-		srv := handlers.NewServer(cfg.Server, userHandler)
+		authRepo := repository.NewAuthRepo(db)
+		authSvc := service.NewAuthService(authRepo)
+		authHandler := handlers.NewAuthHandler(authSvc)
+		srv := handlers.NewServer(cfg.Server, userHandler, authHandler)
 		go func() {
 			sigChan := make(chan os.Signal, 1)
 			signal.Notify(sigChan, os.Interrupt, os.Kill)
@@ -45,6 +49,7 @@ var serverCmd = &cobra.Command{
 				slog.Error("failed to shutdown server", "error", err)
 			}
 		}()
+		slog.Info("server started")
 		return srv.Start()
 	},
 }
