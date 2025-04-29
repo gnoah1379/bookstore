@@ -23,6 +23,7 @@ func LoadConfig(configPath string) (Config, error) {
 type Config struct {
 	DB     Database
 	Server Server
+	Key    JwtSecret
 }
 
 type Database struct {
@@ -35,4 +36,8 @@ type Database struct {
 
 type Server struct {
 	Port int
+}
+
+type JwtSecret struct {
+	JwtSecret string
 }

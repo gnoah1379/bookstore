@@ -12,25 +12,41 @@ type UserLoginRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+type LoginResponse struct {
+	User  model.User `json:"user"`
+	Token string     `json:"token"`
+}
+
 type AuthService interface {
-	Login(ctx context.Context, user UserLoginRequest) (model.User, error)
+	Login(ctx context.Context, user UserLoginRequest) (LoginResponse, error)
 }
 
 type authService struct {
 	userRepo repository.UserRepo
+	jwtUser  repository.JWTRepo
 }
 
-func NewAuthService(userRepo repository.UserRepo) AuthService {
-	return &authService{userRepo: userRepo}
+func NewAuthService(userRepo repository.UserRepo, jwtUser repository.JWTRepo) AuthService {
+	return &authService{
+		userRepo: userRepo,
+		jwtUser:  jwtUser,
+	}
 }
 
-func (s *authService) Login(ctx context.Context, req UserLoginRequest) (model.User, error) {
+func (s *authService) Login(ctx context.Context, req UserLoginRequest) (LoginResponse, error) {
 	user, err := s.userRepo.GetUserByUsername(ctx, req.Username)
 	if err != nil {
-		return model.User{}, err
+		return LoginResponse{}, err
 	}
 	if !CheckPasswordHash(req.Password, user.Password) {
-		return model.User{}, errors.New("invalid password")
+		return LoginResponse{}, errors.New("invalid password")
 	}
-	return user, nil
+	token, err := s.jwtUser.GenerateJWT(user.ID, user.Username)
+	if err != nil {
+		return LoginResponse{}, errors.New("failed to generate JWT")
+	}
+	return LoginResponse{
+		User:  user,
+		Token: token,
+	}, nil
 }

@@ -34,8 +34,9 @@ var serverCmd = &cobra.Command{
 		userRepo := repository.NewUserRepo(db)
 		userSvc := service.NewUserService(userRepo)
 		userHandler := handlers.NewUserHandler(userSvc)
-		authRepo := repository.NewAuthRepo(db)
-		authSvc := service.NewAuthService(authRepo)
+		authRepo := repository.NewUserRepo(db)
+		jwtSvc := repository.NewJWTRepo(cfg.Key.JwtSecret)
+		authSvc := service.NewAuthService(authRepo, jwtSvc)
 		authHandler := handlers.NewAuthHandler(authSvc)
 		srv := handlers.NewServer(cfg.Server, userHandler, authHandler)
 		go func() {

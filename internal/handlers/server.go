@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"bookstore/internal/config"
+	"bookstore/internal/service"
 	"context"
 	"fmt"
 	"net/http"
@@ -43,4 +44,10 @@ func (srv *Server) Shutdown(ctx context.Context) error {
 func (srv *Server) Register() {
 	srv.router.POST("/api/v1/user/register", srv.user.Register)
 	srv.router.POST("/api/v1/auth/login", srv.auth.Login)
+
+	protected := srv.router.Group("/api/v1/service")
+	protected.Use(service.AuthMiddleware())
+	{
+		protected.GET("/api/v1/service/", service.ProtectedHandler)
+	}
 }

@@ -101,3 +101,12 @@ main.go
 
 
 tạo api cho chức năng đăng nhập
+
+27/4
+tìm hiểu về jwt và ứng dụng jwt vào chức năng đăng nhập
+--> jwt(JSONwebtoken) là một phương thức để xác thực giữa server và clients dưới dạng đối tượng JSON
+--> 1 jwt được chia làm 3 phần --> Headder{"alg": "HS256", "typ": "JWT"} thuật toán mã hóa, kiểu token
+                               --> Payload{name, ...} chứa các clamims
+                               --> Signature tạo bằng cách mã hóa headder, payload và một secret key
+
+28/4
