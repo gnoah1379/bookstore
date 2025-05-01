@@ -109,4 +109,10 @@ tìm hiểu về jwt và ứng dụng jwt vào chức năng đăng nhập
                                --> Payload{name, ...} chứa các clamims
                                --> Signature tạo bằng cách mã hóa headder, payload và một secret key
 
-28/4
+29/4
+tạo CRUD api cho book
+tìm hiểu cách sử dụng gorm và đặt tên endpoint cho api
+
+30/4
+test và hoàn thiện chức năng cho api book
+hoàn thiện cho api user
