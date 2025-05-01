@@ -54,7 +54,7 @@ func (r *userRepo) UpdateUserById(ctx context.Context, user *model.User) error {
 	if result.Error != nil {
 		return result.Error
 	}
-	return r.db.WithContext(ctx).Save(user).Error
+	return r.db.WithContext(ctx).Model(&model.User{}).Where("id = ?", user.ID).Updates(user).Error
 }
 
 func (r *userRepo) DeleteUserById(ctx context.Context, id string) (model.User, error) {
