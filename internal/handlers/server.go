@@ -47,6 +47,10 @@ func (srv *Server) Register() {
 	srv.router.POST("/api/v1/user/register", srv.user.Register)
 	srv.router.POST("/api/v1/auth/login", srv.auth.Login)
 
+	//test without jwt check
+	srv.router.PUT("api/v1/test/user/:id", srv.user.UpdateUser)
+	srv.router.PUT("api/v1/test/book/:id", srv.book.UpdateBook)
+
 	protected := srv.router.Group("/api/v1/service")
 	protected.Use(service.AuthMiddleware())
 	{
@@ -56,5 +60,11 @@ func (srv *Server) Register() {
 		protected.GET("/book/:id", srv.book.SearchBooks, service.ProtectedHandler)
 		protected.PUT("/book/:id", srv.book.UpdateBook, service.ProtectedHandler)
 		protected.DELETE("/book/:id", srv.book.DeleteBook, service.ProtectedHandler)
+
+		//user service
+		protected.GET("/user", srv.user.ListUsers, service.ProtectedHandler)
+		protected.GET("/user/:id", srv.user.SearchUser, service.ProtectedHandler)
+		protected.PUT("/user/:id", srv.user.UpdateUser, service.ProtectedHandler)
+		protected.DELETE("/user/:id", srv.user.DeleteUser, service.ProtectedHandler)
 	}
 }

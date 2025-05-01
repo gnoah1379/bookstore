@@ -5,6 +5,7 @@ import (
 	"bookstore/internal/repository"
 	"context"
 	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -21,6 +22,10 @@ type UserRegistration struct {
 
 type UserService interface {
 	Register(ctx context.Context, user UserRegistration) (model.User, error)
+	ListAllUser(ctx context.Context) ([]model.User, error)
+	SearchUserById(ctx context.Context, id string) (model.User, error)
+	UpdateUserById(ctx context.Context, id string, req model.User) (model.User, error)
+	DeleteUserById(ctx context.Context, id string) (model.User, error)
 }
 
 type userService struct {
@@ -53,6 +58,51 @@ func (u *userService) Register(ctx context.Context, userReg UserRegistration) (m
 	err = u.userRepo.CreateUser(ctx, &user)
 	if err != nil {
 		return model.User{}, fmt.Errorf("error creating user %w", err)
+	}
+	return user, err
+}
+
+func (u *userService) ListAllUser(ctx context.Context) ([]model.User, error) {
+	user, err := u.userRepo.GetAllUsers(ctx)
+	if err != nil {
+		return []model.User{}, err
+	}
+	return user, err
+}
+
+func (u *userService) SearchUserById(ctx context.Context, id string) (model.User, error) {
+	user, err := u.userRepo.GetUserById(ctx, id)
+	if err != nil {
+		return model.User{}, err
+	}
+	return user, err
+}
+
+func (u *userService) UpdateUserById(ctx context.Context, id string, req model.User) (model.User, error) {
+	var idInt, _ = strconv.Atoi(id)
+	var user = model.User{
+		ID:        idInt,
+		Username:  req.Username,
+		Password:  req.Password,
+		Email:     req.Email,
+		Birthday:  req.Birthday,
+		Phone:     req.Phone,
+		Avatar:    req.Avatar,
+		Address:   req.Address,
+		Gender:    req.Gender,
+		UpdatedAt: time.Now(),
+	}
+	err := u.userRepo.UpdateUserById(ctx, &user)
+	if err != nil {
+		return model.User{}, err
+	}
+	return user, err
+}
+
+func (u *userService) DeleteUserById(ctx context.Context, id string) (model.User, error) {
+	user, err := u.userRepo.DeleteUserById(ctx, id)
+	if err != nil {
+		return model.User{}, err
 	}
 	return user, err
 }
