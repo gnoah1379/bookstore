@@ -53,5 +53,5 @@ func (r *bookRepo) UpdateBook(ctx context.Context, book model.Book) error {
 	if result.Error != nil {
 		return result.Error
 	}
-	return r.db.WithContext(ctx).Save(book).Error
+	return r.db.WithContext(ctx).Model(&model.Book{}).Where("id = ?", book.ID).Updates(book).Error
 }
