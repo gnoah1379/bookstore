@@ -11,7 +11,7 @@ type BookRepo interface {
 	GetAllBook(ctx context.Context) ([]model.Book, error)
 	GetBookById(ctx context.Context, id string) (model.Book, error)
 	DeleteById(ctx context.Context, id string) (model.Book, error)
-	UpdateBook(ctx context.Context, book *model.Book) error
+	UpdateBook(ctx context.Context, book model.Book) error
 }
 
 var _ BookRepo = (*bookRepo)(nil)
@@ -48,7 +48,10 @@ func (r *bookRepo) DeleteById(ctx context.Context, id string) (model.Book, error
 	return book, err
 }
 
-func (r *bookRepo) UpdateBook(ctx context.Context, book *model.Book) error {
-	r.db.First(&book)
-	return r.db.WithContext(ctx).Save(&book).Error
+func (r *bookRepo) UpdateBook(ctx context.Context, book model.Book) error {
+	result := r.db.WithContext(ctx).Where("id = ?", book.ID).First(&model.Book{})
+	if result.Error != nil {
+		return result.Error
+	}
+	return r.db.WithContext(ctx).Save(book).Error
 }

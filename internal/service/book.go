@@ -78,7 +78,7 @@ func (s *bookService) UpdateBook(ctx context.Context, id string, bookUpdate mode
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
-	err := s.bookRepo.UpdateBook(ctx, &book)
+	err := s.bookRepo.UpdateBook(ctx, book)
 	if err != nil {
 		return model.Book{}, err
 	}

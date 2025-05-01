@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Book struct {
-	ID          string    `json:"id"`
+	ID          string    `json:"id" gorm:"primaryKey"`
 	Bookname    string    `json:"bookname"`
 	Description string    `json:"description"`
 	Category    string    `json:"category"`
