@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func AuthMiddleware() gin.HandlerFunc {
+func AuthMiddleware(jwtRepo repository.JWTRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
@@ -24,8 +24,6 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		tokenString := tokenParts[1]
-
-		var jwtRepo repository.JWTRepo
 
 		claims, err := jwtRepo.VerifyJWT(tokenString)
 		if err != nil {
