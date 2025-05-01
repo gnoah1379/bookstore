@@ -41,7 +41,10 @@ var serverCmd = &cobra.Command{
 		bookRepo := repository.NewBookRepo(db)
 		bookSvc := service.NewBookService(bookRepo)
 		bookHandler := handlers.NewBookHandler(bookSvc)
-		srv := handlers.NewServer(cfg.Server, userHandler, authHandler, bookHandler)
+		orderRepo := repository.NewOrderRepo(db)
+		orderSvc := service.NewOrderService(orderRepo)
+		orderHandler := handlers.NewOrderHandler(orderSvc)
+		srv := handlers.NewServer(cfg, userHandler, authHandler, bookHandler, orderHandler)
 		go func() {
 			sigChan := make(chan os.Signal, 1)
 			signal.Notify(sigChan, os.Interrupt, os.Kill)
