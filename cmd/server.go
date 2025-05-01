@@ -38,7 +38,10 @@ var serverCmd = &cobra.Command{
 		jwtSvc := repository.NewJWTRepo(cfg.Key.JwtSecret)
 		authSvc := service.NewAuthService(authRepo, jwtSvc)
 		authHandler := handlers.NewAuthHandler(authSvc)
-		srv := handlers.NewServer(cfg.Server, userHandler, authHandler)
+		bookRepo := repository.NewBookRepo(db)
+		bookSvc := service.NewBookService(bookRepo)
+		bookHandler := handlers.NewBookHandler(bookSvc)
+		srv := handlers.NewServer(cfg.Server, userHandler, authHandler, bookHandler)
 		go func() {
 			sigChan := make(chan os.Signal, 1)
 			signal.Notify(sigChan, os.Interrupt, os.Kill)
