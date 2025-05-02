@@ -1,6 +1,6 @@
 # BookStore
 
-26/4
+### 26/4
 
 =======TODO=======
 
@@ -102,17 +102,25 @@ main.go
 
 tạo api cho chức năng đăng nhập
 
-27/4
+### 27/4
 tìm hiểu về jwt và ứng dụng jwt vào chức năng đăng nhập
 --> jwt(JSONwebtoken) là một phương thức để xác thực giữa server và clients dưới dạng đối tượng JSON
 --> 1 jwt được chia làm 3 phần --> Headder{"alg": "HS256", "typ": "JWT"} thuật toán mã hóa, kiểu token
                                --> Payload{name, ...} chứa các clamims
                                --> Signature tạo bằng cách mã hóa headder, payload và một secret key
 
-29/4
-tạo CRUD api cho book
-tìm hiểu cách sử dụng gorm và đặt tên endpoint cho api
+### 29/4
+--> tạo CRUD api cho book
+--> tìm hiểu cách sử dụng gorm và đặt tên endpoint cho api
 
-30/4
-test và hoàn thiện chức năng cho api book
-hoàn thiện cho api user
+### 30/4
+--> test và hoàn thiện chức năng cho api book
+--> test và hoàn thiện cho api user
+
+### 1/5
+
+--> tạo CRUD api cho order
+--> test và hoàn thiện chức năng cho api order
+--> sửa lại lỗi cập nhật user và book
+--> thêm chức năng tìm kiếm theo tên cho book
+--> sửa lại lỗi xác thực JWT

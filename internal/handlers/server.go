@@ -50,6 +50,7 @@ func (srv *Server) Register(cfg config.Config) {
 	srv.router.POST("/api/v1/user/register", srv.user.Register)
 	srv.router.POST("/api/v1/auth/login", srv.auth.Login)
 	srv.router.GET("/api/v1/book", srv.book.ListAllBooks)
+	srv.router.GET("/api/v1/book/:bookname", srv.book.SearchBookByName)
 
 	protected := srv.router.Group("/api/v1/service")
 	protected.Use(service.AuthMiddleware(repository.NewJWTRepo(cfg.Key.JwtSecret)))

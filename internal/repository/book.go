@@ -10,6 +10,7 @@ type BookRepo interface {
 	CreateBook(ctx context.Context, book *model.Book) error
 	GetAllBook(ctx context.Context) ([]model.Book, error)
 	GetBookById(ctx context.Context, id string) (model.Book, error)
+	GetBookByName(ctx context.Context, name string) ([]model.Book, error)
 	DeleteById(ctx context.Context, id string) (model.Book, error)
 	UpdateBook(ctx context.Context, book model.Book) error
 }
@@ -35,6 +36,12 @@ func (r *bookRepo) GetAllBook(ctx context.Context) ([]model.Book, error) {
 func (r *bookRepo) GetBookById(ctx context.Context, id string) (model.Book, error) {
 	var book model.Book
 	err := r.db.WithContext(ctx).Where("id = ?", id).First(&book).Error
+	return book, err
+}
+
+func (r *bookRepo) GetBookByName(ctx context.Context, name string) ([]model.Book, error) {
+	var book []model.Book
+	err := r.db.WithContext(ctx).Model(&model.Book{}).Select("name LIKE ?", name).First(&book).Error
 	return book, err
 }
 

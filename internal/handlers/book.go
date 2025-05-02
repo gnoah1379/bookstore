@@ -33,6 +33,16 @@ func (b *BookHandler) SearchBooks(c *gin.Context) {
 	ResponseSuccess(c, books)
 }
 
+func (b *BookHandler) SearchBookByName(c *gin.Context) {
+	var request = c.Param("bookname")
+	books, err := b.bookSvc.SearchBookByName(c.Request.Context(), request)
+	if err != nil {
+		ResponseError(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	ResponseSuccess(c, books)
+}
+
 func (b *BookHandler) CreateBook(c *gin.Context) {
 	var request model.Book
 	err := c.ShouldBindJSON(&request)

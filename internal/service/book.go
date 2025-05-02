@@ -12,6 +12,7 @@ type BookService interface {
 	CreateBook(ctx context.Context, book model.Book) (model.Book, error)
 	ListAllBook(ctx context.Context) ([]model.Book, error)
 	SearchBookById(ctx context.Context, req string) (model.Book, error)
+	SearchBookByName(ctx context.Context, req string) ([]model.Book, error)
 	DeleteBookById(ctx context.Context, req string) (model.Book, error)
 	UpdateBook(ctx context.Context, id string, bookUpdate model.Book) (model.Book, error)
 }
@@ -38,6 +39,14 @@ func (s *bookService) SearchBookById(ctx context.Context, req string) (model.Boo
 		return model.Book{}, err
 	}
 	return book, nil
+}
+
+func (s *bookService) SearchBookByName(ctx context.Context, req string) ([]model.Book, error) {
+	books, err := s.bookRepo.GetBookByName(ctx, req)
+	if err != nil {
+		return []model.Book{}, err
+	}
+	return books, nil
 }
 
 func (s *bookService) CreateBook(ctx context.Context, bookAdd model.Book) (model.Book, error) {
