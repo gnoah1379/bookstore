@@ -7,7 +7,7 @@ type Order struct {
 	UserID    string    `json:"user_id"`
 	Status    string    `json:"status"`
 	Total     int       `json:"total"`
-	CreateAt  time.Time `json:"create_at"`
+	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
 

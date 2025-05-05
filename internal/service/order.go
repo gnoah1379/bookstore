@@ -62,7 +62,15 @@ func (s *orderService) DeleteOrderDetailById(ctx context.Context, id string) (mo
 }
 
 // Order
-func (s *orderService) CreateOrder(ctx context.Context, order model.Order) (model.Order, error) {
+func (s *orderService) CreateOrder(ctx context.Context, orderReq model.Order) (model.Order, error) {
+	var order = model.Order{
+		ID:        orderReq.ID,
+		UserID:    orderReq.UserID,
+		Status:    orderReq.Status,
+		Total:     orderReq.Total,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
 	return order, s.orderRepo.CreateOrder(ctx, &order)
 }
 

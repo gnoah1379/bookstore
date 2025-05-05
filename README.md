@@ -118,9 +118,11 @@ tìm hiểu về jwt và ứng dụng jwt vào chức năng đăng nhập
 --> test và hoàn thiện cho api user
 
 ### 1/5
-
 --> tạo CRUD api cho order
 --> test và hoàn thiện chức năng cho api order
 --> sửa lại lỗi cập nhật user và book
 --> thêm chức năng tìm kiếm theo tên cho book
 --> sửa lại lỗi xác thực JWT
+
+### 5/5
+tạo api cho payment
