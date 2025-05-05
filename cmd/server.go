@@ -44,7 +44,10 @@ var serverCmd = &cobra.Command{
 		orderRepo := repository.NewOrderRepo(db)
 		orderSvc := service.NewOrderService(orderRepo)
 		orderHandler := handlers.NewOrderHandler(orderSvc)
-		srv := handlers.NewServer(cfg, userHandler, authHandler, bookHandler, orderHandler)
+		paymentRepo := repository.NewPaymentRepo(db)
+		paymentSvc := service.NewPaymentService(paymentRepo)
+		paymentHandler := handlers.NewPaymentHandler(paymentSvc)
+		srv := handlers.NewServer(cfg, userHandler, authHandler, bookHandler, orderHandler, paymentHandler)
 		go func() {
 			sigChan := make(chan os.Signal, 1)
 			signal.Notify(sigChan, os.Interrupt, os.Kill)

@@ -12,27 +12,29 @@ import (
 )
 
 type Server struct {
-	router *gin.Engine
-	server *http.Server
-	user   *UserHandler
-	auth   *AuthHandler
-	book   *BookHandler
-	order  *OrderHandler
+	router  *gin.Engine
+	server  *http.Server
+	user    *UserHandler
+	auth    *AuthHandler
+	book    *BookHandler
+	order   *OrderHandler
+	payment *PaymentHandler
 }
 
-func NewServer(cfg config.Config, user *UserHandler, auth *AuthHandler, handler *BookHandler, order *OrderHandler) *Server {
+func NewServer(cfg config.Config, user *UserHandler, auth *AuthHandler, handler *BookHandler, order *OrderHandler, payment *PaymentHandler) *Server {
 	router := gin.Default()
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", cfg.Server.Port),
 		Handler: router,
 	}
 	srv := &Server{
-		user:   user,
-		auth:   auth,
-		book:   handler,
-		router: router,
-		server: server,
-		order:  order,
+		user:    user,
+		auth:    auth,
+		book:    handler,
+		router:  router,
+		server:  server,
+		order:   order,
+		payment: payment,
 	}
 	srv.Register(cfg)
 	return srv
@@ -47,6 +49,7 @@ func (srv *Server) Shutdown(ctx context.Context) error {
 }
 
 func (srv *Server) Register(cfg config.Config) {
+	//public service
 	srv.router.POST("/api/v1/user/register", srv.user.Register)
 	srv.router.POST("/api/v1/auth/login", srv.auth.Login)
 	srv.router.GET("/api/v1/book", srv.book.ListAllBooks)
@@ -73,5 +76,11 @@ func (srv *Server) Register(cfg config.Config) {
 		protected.GET("/order/:id", srv.order.SearchOrder, service.ProtectedHandler)
 		protected.PUT("/order/:id", srv.order.UpdateOrder, service.ProtectedHandler)
 		protected.DELETE("/order/:id", srv.order.DeleteOrder, service.ProtectedHandler)
+
+		//payment service
+		protected.POST("/payment", srv.payment.CreatePayment, service.ProtectedHandler)
+		protected.GET("/payment", srv.payment.ListAllPayments, service.ProtectedHandler)
+		protected.GET("/payment/:order id", srv.payment.SearchPayment, service.ProtectedHandler)
+		protected.PUT("/payment/:order id", srv.payment.ConfirmPayment, service.ProtectedHandler)
 	}
 }
