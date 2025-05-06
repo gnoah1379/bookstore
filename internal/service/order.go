@@ -34,12 +34,29 @@ func NewOrderService(orderRepo repository.OrderRepo) OrderService {
 }
 
 // Order Detail
-func (s *orderService) CreateOrderDetail(ctx context.Context, orderDetail model.OrderDetail) (model.OrderDetail, error) {
-	return orderDetail, s.orderRepo.CreateOrderDetail(ctx, &orderDetail)
+func (s *orderService) CreateOrderDetail(ctx context.Context, orderDetailReq model.OrderDetail) (model.OrderDetail, error) {
+	var orderDetail = model.OrderDetail{
+		ID:        orderDetailReq.ID,
+		OrderID:   orderDetailReq.OrderID,
+		BookID:    orderDetailReq.BookID,
+		Quantity:  orderDetailReq.Quantity,
+		Total:     orderDetailReq.Total,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	err := s.orderRepo.CreateOrderDetail(ctx, &orderDetail)
+	if err != nil {
+		return model.OrderDetail{}, err
+	}
+	return orderDetail, err
 }
 
 func (s *orderService) ListAllOrderDetailByOrderId(ctx context.Context, orderId string) ([]model.OrderDetail, error) {
-	return s.orderRepo.GetAllOrderDetailByOrderId(ctx, orderId)
+	orderDetails, err := s.orderRepo.GetAllOrderDetailByOrderId(ctx, orderId)
+	if err != nil {
+		return []model.OrderDetail{}, err
+	}
+	return orderDetails, err
 }
 
 func (s *orderService) UpdateOrderDetailById(ctx context.Context, id string, req model.OrderDetail) (model.OrderDetail, error) {
@@ -75,11 +92,19 @@ func (s *orderService) CreateOrder(ctx context.Context, orderReq model.Order) (m
 }
 
 func (s *orderService) ListAllOrder(ctx context.Context) ([]model.Order, error) {
-	return s.orderRepo.GetAllOrder(ctx)
+	order, err := s.orderRepo.GetAllOrder(ctx)
+	if err != nil {
+		return []model.Order{}, err
+	}
+	return order, err
 }
 
 func (s *orderService) SearchOrderById(ctx context.Context, id string) (model.Order, error) {
-	return s.orderRepo.GetOrderById(ctx, id)
+	order, err := s.orderRepo.GetOrderById(ctx, id)
+	if err != nil {
+		return model.Order{}, err
+	}
+	return order, err
 }
 
 func (s *orderService) UpdateOrderById(ctx context.Context, id string, req model.Order) (model.Order, error) {
