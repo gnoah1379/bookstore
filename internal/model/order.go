@@ -18,6 +18,6 @@ type OrderDetail struct {
 	Quantity  int       `json:"quantity"`
 	Price     int       `json:"price"`
 	Total     int       `json:"total"`
-	CreateAt  time.Time `json:"create_at"`
+	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
