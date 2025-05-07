@@ -150,3 +150,5 @@ reply-review(review_id, comment, user_comment, created/updated_at)
 ### 7/5
 hoàn thiện và kiểm thử api đánh giá sách
 update check role và user id cho các api yêu cầu update và delete
+thêm giảm số lượng sách khi thanh toán thành công
+cập nhật get all order by user id cho api order

@@ -39,6 +39,7 @@ func (r *paymentRepo) CheckPayment(ctx context.Context, payment *model.Payment) 
 	if tx.Error != nil {
 		return tx.Error
 	}
+
 	paymentUpdate := tx.Model(&model.Payment{}).Where("order_id = ?", payment.OrderID).Update("status", "completed")
 	if paymentUpdate.Error != nil {
 		return paymentUpdate.Error
@@ -46,6 +47,20 @@ func (r *paymentRepo) CheckPayment(ctx context.Context, payment *model.Payment) 
 	if paymentUpdate.RowsAffected == 0 {
 		return errors.New("không tìm thấy đơn hàng hoặc đã được cập nhật")
 	}
+
+	var orderDetails []model.OrderDetail
+	orderDetailList := tx.Model(&model.OrderDetail{}).Where("order_id = ?", payment.OrderID).Find(&orderDetails)
+	if orderDetailList.Error != nil {
+		return orderDetailList.Error
+	}
+
+	for _, orderDetail := range orderDetails {
+		bookUpdate := tx.Model(&model.Book{}).Where("id = ?", orderDetail.BookID).Update("stock", gorm.Expr("stock - ?", orderDetail.Quantity))
+		if bookUpdate.Error != nil {
+			return bookUpdate.Error
+		}
+	}
+
 	orderUpdate := tx.Model(&model.Order{}).Where("id = ?", payment.OrderID).Update("status", "completed")
 	if orderUpdate.Error != nil {
 		return orderUpdate.Error
@@ -53,6 +68,7 @@ func (r *paymentRepo) CheckPayment(ctx context.Context, payment *model.Payment) 
 	if orderUpdate.RowsAffected == 0 {
 		return errors.New("không tìm thấy đơn hàng hoặc đã được cập nhật")
 	}
+
 	return tx.Commit().Error
 }
 
