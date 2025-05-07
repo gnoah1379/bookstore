@@ -17,11 +17,12 @@ type Server struct {
 	user    *UserHandler
 	auth    *AuthHandler
 	book    *BookHandler
+	review  *ReviewHandler
 	order   *OrderHandler
 	payment *PaymentHandler
 }
 
-func NewServer(cfg config.Config, user *UserHandler, auth *AuthHandler, handler *BookHandler, order *OrderHandler, payment *PaymentHandler) *Server {
+func NewServer(cfg config.Config, user *UserHandler, auth *AuthHandler, handler *BookHandler, review *ReviewHandler, order *OrderHandler, payment *PaymentHandler) *Server {
 	router := gin.Default()
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", cfg.Server.Port),
@@ -31,6 +32,7 @@ func NewServer(cfg config.Config, user *UserHandler, auth *AuthHandler, handler 
 		user:    user,
 		auth:    auth,
 		book:    handler,
+		review:  review,
 		router:  router,
 		server:  server,
 		order:   order,
@@ -54,6 +56,8 @@ func (srv *Server) Register(cfg config.Config) {
 	srv.router.POST("/api/v1/auth/login", srv.auth.Login)
 	srv.router.GET("/api/v1/book", srv.book.ListAllBooks)
 	srv.router.GET("/api/v1/book/:bookname", srv.book.SearchBookByName)
+	srv.router.GET("/api/v1/review/:book id", srv.review.ListReviewByBookId)
+	srv.router.GET("/api/v1/reply/:review id", srv.review.ListReplyByReviewId)
 
 	protected := srv.router.Group("/api/v1/service")
 	protected.Use(service.AuthMiddleware(repository.NewJWTRepo(cfg.Key.JwtSecret)))
@@ -63,6 +67,18 @@ func (srv *Server) Register(cfg config.Config) {
 		protected.GET("/book/:id", srv.book.SearchBooks, service.ProtectedHandler)
 		protected.PUT("/book/:id", srv.book.UpdateBook, service.ProtectedHandler)
 		protected.DELETE("/book/:id", srv.book.DeleteBook, service.ProtectedHandler)
+
+		//review service
+		protected.POST("/review", srv.review.CreateReview, service.ProtectedHandler)
+		protected.GET("/review", srv.review.ListAllReview, service.ProtectedHandler)
+		protected.PUT("/review/:review id", srv.review.UpdateReviewByReviewId, service.ProtectedHandler)
+		protected.DELETE("/review/:review_id", srv.review.DeleteReviewByReviewId, service.ProtectedHandler)
+
+		//reply review service
+		protected.POST("/reply", srv.review.CreateReply, service.ProtectedHandler)
+		protected.GET("/reply", srv.review.ListAllReply, service.ProtectedHandler)
+		protected.PUT("/reply/:reply id", srv.review.UpdateReplyByReplyId, service.ProtectedHandler)
+		protected.DELETE("/reply/:reply id", srv.review.DeleteReplyByReplyId, service.ProtectedHandler)
 
 		//user service
 		protected.GET("/user", srv.user.ListUsers, service.ProtectedHandler)

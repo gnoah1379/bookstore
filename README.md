@@ -128,3 +128,25 @@ tìm hiểu về jwt và ứng dụng jwt vào chức năng đăng nhập
 tạo api cho payment
 hoàn thiện lại orderService
 
+### 6/5
+tạo api cho chức năng đánh giá sách
+-db
+review(review_id, book_id, rating, comment, user_comment, count_reply, created/updated_at)
+reply-review(review_id, comment, user_comment, created/updated_at)
+-service
+    get all review    //require admin
+    get all reply    //require admin
+
+    create review    //require auth
+    get review by book id
+    update review    //require auth
+    delete review    //require auth
+
+    create reply    //require auth
+    get reply review by review id
+    update reply    //require auth
+    delete reply    //require auth
+
+### 7/5
+hoàn thiện và kiểm thử api đánh giá sách
+update check role và user id cho các api yêu cầu update và delete
