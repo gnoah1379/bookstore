@@ -65,3 +65,29 @@ CREATE TABLE payments
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (order_id) REFERENCES orders (id)
 );
+
+CREATE TABLE reviews
+(
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    user_id    INT NOT NULL,
+    book_id    INT NOT NULL,
+    rating     INT NOT NULL,
+    comment    TEXT NOT NULL,
+    count_reply INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (book_id) REFERENCES books (id)
+);
+
+CREATE TABLE reply_reviews
+(
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    review_id  INT NOT NULL,
+    user_id    INT NOT NULL,
+    comment    TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (review_id) REFERENCES reviews (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
+);
