@@ -16,6 +16,7 @@ type OrderRepo interface {
 	// Order CRUD
 	CreateOrder(ctx context.Context, order *model.Order) error
 	GetAllOrder(ctx context.Context) ([]model.Order, error)
+	GetAllOrderByUserId(ctx context.Context, userId string) ([]model.Order, error)
 	GetOrderById(ctx context.Context, id string) (model.Order, error)
 	UpdateOrderById(ctx context.Context, updateReq model.Order) error
 	DeleteOrderById(ctx context.Context, id string) error
@@ -65,6 +66,12 @@ func (r *orderRepo) CreateOrder(ctx context.Context, order *model.Order) error {
 func (r *orderRepo) GetAllOrder(ctx context.Context) ([]model.Order, error) {
 	var orders []model.Order
 	err := r.db.WithContext(ctx).Find(&orders).Error
+	return orders, err
+}
+
+func (r *orderRepo) GetAllOrderByUserId(ctx context.Context, userId string) ([]model.Order, error) {
+	var orders []model.Order
+	err := r.db.WithContext(ctx).Where("user_id = ?", userId).Find(&orders).Error
 	return orders, err
 }
 

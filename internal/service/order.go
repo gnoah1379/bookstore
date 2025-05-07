@@ -18,6 +18,7 @@ type OrderService interface {
 	// Order service
 	CreateOrder(ctx context.Context, order model.Order) (model.Order, error)
 	ListAllOrder(ctx context.Context) ([]model.Order, error)
+	ListAllOrderByUserId(ctx context.Context, userId string) ([]model.Order, error)
 	SearchOrderById(ctx context.Context, id string) (model.Order, error)
 	UpdateOrderById(ctx context.Context, id string, req model.Order) (model.Order, error)
 	DeleteOrderById(ctx context.Context, id string) (model.Order, error)
@@ -93,6 +94,14 @@ func (s *orderService) CreateOrder(ctx context.Context, orderReq model.Order) (m
 
 func (s *orderService) ListAllOrder(ctx context.Context) ([]model.Order, error) {
 	order, err := s.orderRepo.GetAllOrder(ctx)
+	if err != nil {
+		return []model.Order{}, err
+	}
+	return order, err
+}
+
+func (s *orderService) ListAllOrderByUserId(ctx context.Context, userId string) ([]model.Order, error) {
+	order, err := s.orderRepo.GetAllOrderByUserId(ctx, userId)
 	if err != nil {
 		return []model.Order{}, err
 	}

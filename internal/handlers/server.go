@@ -89,6 +89,7 @@ func (srv *Server) Register(cfg config.Config) {
 		//order service
 		protected.POST("/order", srv.order.CreateOrder, service.ProtectedHandler)
 		protected.GET("/order", srv.order.ListAllOrder, service.ProtectedHandler)
+		protected.GET("/order/:user id", srv.order.ListAllOrderByUserId, service.ProtectedHandler)
 		protected.GET("/order/:id", srv.order.SearchOrder, service.ProtectedHandler)
 		protected.PUT("/order/:id", srv.order.UpdateOrder, service.ProtectedHandler)
 		protected.DELETE("/order/:id", srv.order.DeleteOrder, service.ProtectedHandler)

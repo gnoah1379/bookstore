@@ -101,6 +101,15 @@ func (h *OrderHandler) ListAllOrder(c *gin.Context) {
 	ResponseSuccess(c, orders)
 }
 
+func (h *OrderHandler) ListAllOrderByUserId(c *gin.Context) {
+	orders, err := h.orderSvc.ListAllOrderByUserId(c.Request.Context(), c.Param("user id"))
+	if err != nil {
+		ResponseError(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	ResponseSuccess(c, orders)
+}
+
 func (h *OrderHandler) UpdateOrder(c *gin.Context) {
 	var id = c.Param("id")
 	var req model.Order
