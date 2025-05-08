@@ -12,31 +12,33 @@ import (
 )
 
 type Server struct {
-	router  *gin.Engine
-	server  *http.Server
-	user    *UserHandler
-	auth    *AuthHandler
-	book    *BookHandler
-	review  *ReviewHandler
-	order   *OrderHandler
-	payment *PaymentHandler
+	router    *gin.Engine
+	server    *http.Server
+	user      *UserHandler
+	auth      *AuthHandler
+	whishlist *WhishlistHandler
+	book      *BookHandler
+	review    *ReviewHandler
+	order     *OrderHandler
+	payment   *PaymentHandler
 }
 
-func NewServer(cfg config.Config, user *UserHandler, auth *AuthHandler, handler *BookHandler, review *ReviewHandler, order *OrderHandler, payment *PaymentHandler) *Server {
+func NewServer(cfg config.Config, user *UserHandler, auth *AuthHandler, whishlist *WhishlistHandler, handler *BookHandler, review *ReviewHandler, order *OrderHandler, payment *PaymentHandler) *Server {
 	router := gin.Default()
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", cfg.Server.Port),
 		Handler: router,
 	}
 	srv := &Server{
-		user:    user,
-		auth:    auth,
-		book:    handler,
-		review:  review,
-		router:  router,
-		server:  server,
-		order:   order,
-		payment: payment,
+		user:      user,
+		auth:      auth,
+		whishlist: whishlist,
+		book:      handler,
+		review:    review,
+		router:    router,
+		server:    server,
+		order:     order,
+		payment:   payment,
 	}
 	srv.Register(cfg)
 	return srv
@@ -86,11 +88,16 @@ func (srv *Server) Register(cfg config.Config) {
 		protected.PUT("/user/:id", srv.user.UpdateUser, service.ProtectedHandler)
 		protected.DELETE("/user/:id", srv.user.DeleteUser, service.ProtectedHandler)
 
+		//whishlist service
+		protected.POST("/whishlist", srv.whishlist.AddWhishItem, service.ProtectedHandler)
+		protected.GET("/whishlist/:user id", srv.whishlist.GetWhishlistByUserId, service.ProtectedHandler)
+		protected.DELETE("/whishlist/:item id", srv.whishlist.DeleteWhishItemByWishItemId, service.ProtectedHandler)
+
 		//order service
 		protected.POST("/order", srv.order.CreateOrder, service.ProtectedHandler)
 		protected.GET("/order", srv.order.ListAllOrder, service.ProtectedHandler)
-		protected.GET("/order/:user id", srv.order.ListAllOrderByUserId, service.ProtectedHandler)
 		protected.GET("/order/:id", srv.order.SearchOrder, service.ProtectedHandler)
+		protected.GET("/order/user/:user id", srv.order.ListAllOrderByUserId, service.ProtectedHandler)
 		protected.PUT("/order/:id", srv.order.UpdateOrder, service.ProtectedHandler)
 		protected.DELETE("/order/:id", srv.order.DeleteOrder, service.ProtectedHandler)
 
