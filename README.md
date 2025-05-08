@@ -152,3 +152,10 @@ hoàn thiện và kiểm thử api đánh giá sách
 update check role và user id cho các api yêu cầu update và delete
 thêm giảm số lượng sách khi thanh toán thành công
 cập nhật get all order by user id cho api order
+tạo api cho chức năng lưu sách ưu thích cho user
+-db
+whishlist(whishlist_id, user_id, book_id, created/updated_at)
+-service
+    create whish    //require auth
+    get whishlist by user id    //require auth
+    delete whish    //require auth

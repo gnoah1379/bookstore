@@ -38,6 +38,9 @@ var serverCmd = &cobra.Command{
 		jwtSvc := repository.NewJWTRepo(cfg.Key.JwtSecret)
 		authSvc := service.NewAuthService(authRepo, jwtSvc)
 		authHandler := handlers.NewAuthHandler(authSvc)
+		whishlistRepo := repository.NewWhishlistRepo(db)
+		whishlistSvc := service.NewWhishlistService(whishlistRepo)
+		whishlistHandler := handlers.NewWhishlistHandler(whishlistSvc)
 		bookRepo := repository.NewBookRepo(db)
 		bookSvc := service.NewBookService(bookRepo)
 		bookHandler := handlers.NewBookHandler(bookSvc)
@@ -50,7 +53,7 @@ var serverCmd = &cobra.Command{
 		paymentRepo := repository.NewPaymentRepo(db)
 		paymentSvc := service.NewPaymentService(paymentRepo)
 		paymentHandler := handlers.NewPaymentHandler(paymentSvc)
-		srv := handlers.NewServer(cfg, userHandler, authHandler, bookHandler, reviewHandler, orderHandler, paymentHandler)
+		srv := handlers.NewServer(cfg, userHandler, authHandler, whishlistHandler, bookHandler, reviewHandler, orderHandler, paymentHandler)
 		go func() {
 			sigChan := make(chan os.Signal, 1)
 			signal.Notify(sigChan, os.Interrupt, os.Kill)
