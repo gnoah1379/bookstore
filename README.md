@@ -159,3 +159,8 @@ whishlist(whishlist_id, user_id, book_id, created/updated_at)
     create whish    //require auth
     get whishlist by user id    //require auth
     delete whish    //require auth
+
+### 8/5
+cập nhật jwt trả về thêm user role
+tạo adminHandler cho các api admin
+tạo userHandler cho các api user
