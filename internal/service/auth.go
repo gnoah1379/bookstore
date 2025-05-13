@@ -41,7 +41,8 @@ func (s *authService) Login(ctx context.Context, req UserLoginRequest) (LoginRes
 	if !CheckPasswordHash(req.Password, user.Password) {
 		return LoginResponse{}, errors.New("invalid password")
 	}
-	token, err := s.jwtUser.GenerateJWT(user.ID, user.Username)
+	var role = string(user.Role)
+	token, err := s.jwtUser.GenerateJWT(user.ID, user.Username, role)
 	if err != nil {
 		return LoginResponse{}, errors.New("failed to generate JWT")
 	}

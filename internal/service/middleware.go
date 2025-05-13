@@ -36,7 +36,7 @@ func AuthMiddleware(jwtRepo repository.JWTRepo) gin.HandlerFunc {
 	}
 }
 
-func ProtectedHandler(c *gin.Context) {
+func UserHandler(c *gin.Context) {
 	user, exists := c.Get("user")
 	if !exists {
 		c.AbortWithStatusJSON(http.StatusNoContent, gin.H{"error": "Không thể lấy thông tin người dùng"})
@@ -46,6 +46,27 @@ func ProtectedHandler(c *gin.Context) {
 	claims, ok := user.(*model.UserClaims)
 	if !ok {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Định dạng thông tin người dùng không hợp lệ"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Chào mừng!", "user_id": claims.ID, "username": claims.Username})
+}
+
+func AdminHandler(c *gin.Context) {
+	user, exists := c.Get("user")
+	if !exists {
+		c.AbortWithStatusJSON(http.StatusNoContent, gin.H{"error": "Không thể lấy thông tin người dùng"})
+		return
+	}
+
+	claims, ok := user.(*model.UserClaims)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Định dạng thông tin người dùng không hợp lệ"})
+		return
+	}
+
+	if claims.Role != "admin" {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Người dùng không đủ quyền truy cập"})
 		return
 	}
 

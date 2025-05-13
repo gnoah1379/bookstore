@@ -9,7 +9,7 @@ import (
 )
 
 type JWTRepo interface {
-	GenerateJWT(ID int, username string) (string, error)
+	GenerateJWT(ID int, username string, role string) (string, error)
 	VerifyJWT(tokenString string) (*model.UserClaims, error)
 }
 
@@ -23,10 +23,11 @@ func NewJWTRepo(secretKey string) JWTRepo {
 	return &jwtRepo{SecretKey: []byte(secretKey)}
 }
 
-func (j *jwtRepo) GenerateJWT(ID int, username string) (string, error) {
+func (j *jwtRepo) GenerateJWT(ID int, username string, role string) (string, error) {
 	claims := model.UserClaims{
 		Id:       ID,
 		Username: username,
+		Role:     role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

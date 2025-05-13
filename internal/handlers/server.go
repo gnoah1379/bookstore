@@ -65,46 +65,46 @@ func (srv *Server) Register(cfg config.Config) {
 	protected.Use(service.AuthMiddleware(repository.NewJWTRepo(cfg.Key.JwtSecret)))
 	{
 		//book service
-		protected.POST("/book", srv.book.CreateBook, service.ProtectedHandler)
-		protected.GET("/book/:id", srv.book.SearchBooks, service.ProtectedHandler)
-		protected.PUT("/book/:id", srv.book.UpdateBook, service.ProtectedHandler)
-		protected.DELETE("/book/:id", srv.book.DeleteBook, service.ProtectedHandler)
+		protected.POST("/book", srv.book.CreateBook, service.AdminHandler)
+		protected.GET("/book/:id", srv.book.SearchBooks, service.AdminHandler)
+		protected.PUT("/book/:id", srv.book.UpdateBook, service.AdminHandler)
+		protected.DELETE("/book/:id", srv.book.DeleteBook, service.AdminHandler)
 
 		//review service
-		protected.POST("/review", srv.review.CreateReview, service.ProtectedHandler)
-		protected.GET("/review", srv.review.ListAllReview, service.ProtectedHandler)
-		protected.PUT("/review/:review id", srv.review.UpdateReviewByReviewId, service.ProtectedHandler)
-		protected.DELETE("/review/:review_id", srv.review.DeleteReviewByReviewId, service.ProtectedHandler)
+		protected.POST("/review", srv.review.CreateReview, service.UserHandler)
+		protected.GET("/review", srv.review.ListAllReview, service.AdminHandler)
+		protected.PUT("/review/:review id", srv.review.UpdateReviewByReviewId, service.UserHandler)
+		protected.DELETE("/review/:review_id", srv.review.DeleteReviewByReviewId, service.UserHandler)
 
 		//reply review service
-		protected.POST("/reply", srv.review.CreateReply, service.ProtectedHandler)
-		protected.GET("/reply", srv.review.ListAllReply, service.ProtectedHandler)
-		protected.PUT("/reply/:reply id", srv.review.UpdateReplyByReplyId, service.ProtectedHandler)
-		protected.DELETE("/reply/:reply id", srv.review.DeleteReplyByReplyId, service.ProtectedHandler)
+		protected.POST("/reply", srv.review.CreateReply, service.UserHandler)
+		protected.GET("/reply", srv.review.ListAllReply, service.AdminHandler)
+		protected.PUT("/reply/:reply id", srv.review.UpdateReplyByReplyId, service.UserHandler)
+		protected.DELETE("/reply/:reply id", srv.review.DeleteReplyByReplyId, service.UserHandler)
 
 		//user service
-		protected.GET("/user", srv.user.ListUsers, service.ProtectedHandler)
-		protected.GET("/user/:id", srv.user.SearchUser, service.ProtectedHandler)
-		protected.PUT("/user/:id", srv.user.UpdateUser, service.ProtectedHandler)
-		protected.DELETE("/user/:id", srv.user.DeleteUser, service.ProtectedHandler)
+		protected.GET("/user", srv.user.ListUsers, service.AdminHandler)
+		protected.GET("/user/:id", srv.user.SearchUser, service.AdminHandler)
+		protected.PUT("/user/:id", srv.user.UpdateUser, service.UserHandler)
+		protected.DELETE("/user/:id", srv.user.DeleteUser, service.UserHandler)
 
 		//whishlist service
-		protected.POST("/whishlist", srv.whishlist.AddWhishItem, service.ProtectedHandler)
-		protected.GET("/whishlist/:user id", srv.whishlist.GetWhishlistByUserId, service.ProtectedHandler)
-		protected.DELETE("/whishlist/:item id", srv.whishlist.DeleteWhishItemByWishItemId, service.ProtectedHandler)
+		protected.POST("/whishlist", srv.whishlist.AddWhishItem, service.UserHandler)
+		protected.GET("/whishlist/:user id", srv.whishlist.GetWhishlistByUserId, service.UserHandler)
+		protected.DELETE("/whishlist/:item id", srv.whishlist.DeleteWhishItemByWishItemId, service.UserHandler)
 
 		//order service
-		protected.POST("/order", srv.order.CreateOrder, service.ProtectedHandler)
-		protected.GET("/order", srv.order.ListAllOrder, service.ProtectedHandler)
-		protected.GET("/order/:id", srv.order.SearchOrder, service.ProtectedHandler)
-		protected.GET("/order/user/:user id", srv.order.ListAllOrderByUserId, service.ProtectedHandler)
-		protected.PUT("/order/:id", srv.order.UpdateOrder, service.ProtectedHandler)
-		protected.DELETE("/order/:id", srv.order.DeleteOrder, service.ProtectedHandler)
+		protected.POST("/order", srv.order.CreateOrder, service.UserHandler)
+		protected.GET("/order", srv.order.ListAllOrder, service.AdminHandler)
+		protected.GET("/order/:id", srv.order.SearchOrder, service.UserHandler)
+		protected.GET("/order/user/:user id", srv.order.ListAllOrderByUserId, service.UserHandler)
+		protected.PUT("/order/:id", srv.order.UpdateOrder, service.UserHandler)
+		protected.DELETE("/order/:id", srv.order.DeleteOrder, service.UserHandler)
 
 		//payment service
-		protected.POST("/payment", srv.payment.CreatePayment, service.ProtectedHandler)
-		protected.GET("/payment", srv.payment.ListAllPayments, service.ProtectedHandler)
-		protected.GET("/payment/:order id", srv.payment.SearchPayment, service.ProtectedHandler)
-		protected.PUT("/payment/:order id", srv.payment.ConfirmPayment, service.ProtectedHandler)
+		protected.POST("/payment", srv.payment.CreatePayment, service.UserHandler)
+		protected.GET("/payment", srv.payment.ListAllPayments, service.AdminHandler)
+		protected.GET("/payment/:order id", srv.payment.SearchPayment, service.UserHandler)
+		protected.PUT("/payment/:order id", srv.payment.ConfirmPayment, service.UserHandler)
 	}
 }
